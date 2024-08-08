@@ -1,6 +1,6 @@
 package com.example.wantedmarket.common.exception;
 
-import com.example.wantedmarket.auth.controller.consts.ErrorCodes;
+import com.example.wantedmarket.user.controller.consts.ErrorCodes;
 import org.springframework.http.HttpStatus;
 
 public class WantedMarketHttpException extends RuntimeException {
