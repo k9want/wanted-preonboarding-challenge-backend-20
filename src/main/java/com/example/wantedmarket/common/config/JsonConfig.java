@@ -1,4 +1,4 @@
-package com.example.wantedmarket.config;
+package com.example.wantedmarket.common.config;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;

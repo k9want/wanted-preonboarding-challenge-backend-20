@@ -1,4 +1,4 @@
-package com.example.wantedmarket.config;
+package com.example.wantedmarket.common.config;
 
 import java.time.ZonedDateTime;
 import java.util.Optional;
