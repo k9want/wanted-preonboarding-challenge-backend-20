@@ -7,7 +7,6 @@ import com.example.wantedmarket.user.service.UserService;
 import com.example.wantedmarket.user.service.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,7 +25,8 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<UserRegisterResponse> register(
         @Validated @RequestBody UserRegisterRequest request) {
-        final User user = userService.register(request.username(), request.password(), request.nickname());
+        final User user = userService.register(request.username(), request.password(),
+            request.nickname());
         UserRegisterResponse response = UserRegisterResponse.from(user);
         return ApiResponse.fromData(response);
     }
