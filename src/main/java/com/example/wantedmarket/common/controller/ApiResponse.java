@@ -1,6 +1,5 @@
 package com.example.wantedmarket.common.controller;
 
-import com.example.wantedmarket.user.controller.consts.ErrorCodes;
 import java.util.Map;
 
 public record ApiResponse<T>(

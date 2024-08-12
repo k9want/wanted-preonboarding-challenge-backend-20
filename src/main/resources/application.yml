@@ -18,3 +18,7 @@ logging:
           descriptor:
             sql:
               BasicBinder: TRACE
+
+jwt:
+  secret-key: ${jwt-secret-key}
+  access-token-plus-hour: ${jwt-access-token-plus-hour}

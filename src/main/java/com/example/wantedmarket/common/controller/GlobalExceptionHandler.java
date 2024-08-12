@@ -2,9 +2,7 @@ package com.example.wantedmarket.common.controller;
 
 import com.example.wantedmarket.common.controller.consts.CommonErrorCodes;
 import com.example.wantedmarket.common.exception.WantedMarketHttpException;
-import com.example.wantedmarket.user.controller.consts.ErrorCodes;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;

@@ -1,20 +1,21 @@
 package com.example.wantedmarket.common.exception;
 
-import com.example.wantedmarket.user.controller.consts.ErrorCodes;
+import com.example.wantedmarket.common.controller.ErrorCodesIf;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 public class WantedMarketHttpException extends RuntimeException {
 
-    private final ErrorCodes errorCodes;
+    private final ErrorCodesIf errorCodesIf;
     private final HttpStatus httpStatus;
 
-    public WantedMarketHttpException(ErrorCodes errorCodes, HttpStatus httpStatus) {
-        this.errorCodes = errorCodes;
+    public WantedMarketHttpException(ErrorCodesIf errorCodesIf, HttpStatus httpStatus) {
+        this.errorCodesIf = errorCodesIf;
         this.httpStatus = httpStatus;
     }
 
-    public ErrorCodes getErrorCodes() {
-        return errorCodes;
+    public ErrorCodesIf getErrorCodes() {
+        return errorCodesIf;
     }
 
     public HttpStatus getHttpStatus() {

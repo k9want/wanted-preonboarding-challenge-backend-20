@@ -17,11 +17,23 @@ public class UserPersistenceAdapterImpl implements UserPersistenceAdapter {
     @Override
     public User findById(Long userId) {
         Optional<UserEntity> optionalUserEntity = userJpaRepository.findById(userId);
-        if (optionalUserEntity.isEmpty()) {
-            return null;
-        }
+        return optionalUserEntity.map(this::mapToDomain).orElse(null);
 
-        return this.mapToDomain(optionalUserEntity.get());
+    }
+
+    @Override
+    public User findByUsername(String username) {
+        Optional<UserEntity> optionalUserEntity = userJpaRepository.findByUsername(username);
+        return optionalUserEntity.map(this::mapToDomain).orElse(null);
+
+    }
+
+    @Override
+    public User findByUsernameAndPassword(String username, String password) {
+        Optional<UserEntity> optionalUserEntity = userJpaRepository.findByUsernameAndPassword(
+            username, password);
+
+        return optionalUserEntity.map(this::mapToDomain).orElse(null);
     }
 
     @Override
@@ -39,6 +51,7 @@ public class UserPersistenceAdapterImpl implements UserPersistenceAdapter {
 
         return mapToDomain(userJpaRepository.save(entity));
     }
+
 
     private UserEntity mapToEntity(User user) {
         return UserEntity.builder()
