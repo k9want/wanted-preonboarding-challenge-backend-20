@@ -1,5 +1,6 @@
 package com.example.wantedmarket.user.repository.jpa.entity;
 
+import com.example.wantedmarket.user.service.domain.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
@@ -31,5 +32,23 @@ public class UserEntity {
         this.username = username;
         this.password = password;
         this.nickname = nickname;
+    }
+
+    public static UserEntity from(User user) {
+        return UserEntity.builder()
+            .id(user.getId())
+            .username(user.getUsername())
+            .password(user.getPassword())
+            .nickname(user.getNickname())
+            .build();
+    }
+
+    public User toModel() {
+        return User.builder()
+            .id(this.getId())
+            .username(this.getUsername())
+            .password(this.getPassword())
+            .nickname(this.getNickname())
+            .build();
     }
 }
