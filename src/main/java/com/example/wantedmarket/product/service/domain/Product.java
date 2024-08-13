@@ -1,6 +1,6 @@
 package com.example.wantedmarket.product.service.domain;
 
-import com.example.wantedmarket.product.repository.jpa.entity.enums.ProductStatus;
+import com.example.wantedmarket.product.service.domain.enums.ProductStatus;
 import com.example.wantedmarket.user.service.domain.User;
 import lombok.Builder;
 import lombok.Getter;

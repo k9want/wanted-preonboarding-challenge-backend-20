@@ -1,4 +1,4 @@
-package com.example.wantedmarket.product.repository.jpa.entity.enums;
+package com.example.wantedmarket.product.service.domain.enums;
 
 public enum ProductStatus {
     ON_SALE("판매중"),
