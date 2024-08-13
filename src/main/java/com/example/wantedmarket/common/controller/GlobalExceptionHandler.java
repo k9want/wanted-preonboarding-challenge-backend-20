@@ -63,7 +63,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Object>> handleExceptionHandler(Exception e) {
 
-        log.error("{e}", e);
+        log.error("서버 에러 발생 - ", e);
 
         final ApiResponse<Object> body = ApiResponse.fromErrorCodes(CommonErrorCodes.INTERNAL_SERVER_ERROR);
         final MediaType contentType = new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8);
