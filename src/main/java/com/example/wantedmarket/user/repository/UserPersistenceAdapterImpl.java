@@ -29,14 +29,6 @@ public class UserPersistenceAdapterImpl implements UserPersistenceAdapter {
     }
 
     @Override
-    public User findByUsernameAndPassword(String username, String password) {
-        Optional<UserEntity> optionalUserEntity = userJpaRepository.findByUsernameAndPassword(
-            username, password);
-
-        return optionalUserEntity.map(this::mapToDomain).orElse(null);
-    }
-
-    @Override
     public User save(User user) {
         UserEntity entity = null;
 
@@ -58,7 +50,7 @@ public class UserPersistenceAdapterImpl implements UserPersistenceAdapter {
             .id(user.getId())
             .username(user.getUsername())
             .password(user.getPassword())
-            .nickname(user.getPassword())
+            .nickname(user.getNickname())
             .build();
     }
 
@@ -68,7 +60,7 @@ public class UserPersistenceAdapterImpl implements UserPersistenceAdapter {
             .id(userEntity.getId())
             .username(userEntity.getUsername())
             .password(userEntity.getPassword())
-            .nickname(userEntity.getPassword())
+            .nickname(userEntity.getNickname())
             .build();
     }
 }

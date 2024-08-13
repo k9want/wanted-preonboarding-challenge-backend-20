@@ -1,14 +1,14 @@
 package com.example.wantedmarket.user.controller;
 
-import static com.example.wantedmarket.user.controller.consts.UserErrorCode.LOGIN_USER_NOT_FOUND;
-
 import com.example.wantedmarket.common.controller.ApiResponse;
 import com.example.wantedmarket.common.exception.WantedMarketHttpException;
+import com.example.wantedmarket.user.controller.consts.UserErrorCode;
 import com.example.wantedmarket.user.controller.dto.UserLoginRequest;
 import com.example.wantedmarket.user.controller.dto.UserLoginResponse;
 import com.example.wantedmarket.user.service.UserLoginFacade;
 import com.example.wantedmarket.user.service.command.LoginCommand;
-import com.example.wantedmarket.user.service.exception.LoginUserNotFoundException;
+import com.example.wantedmarket.user.service.exception.AuthInvalidPasswordException;
+import com.example.wantedmarket.user.service.exception.AuthUserNameNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -33,8 +33,10 @@ public class LoginController {
 
         try {
             result = userLoginFacade.login(request.username(), request.password());
-        } catch (LoginUserNotFoundException e) {
-            throw new WantedMarketHttpException(LOGIN_USER_NOT_FOUND, HttpStatus.NOT_FOUND);
+        } catch (AuthUserNameNotFoundException e) {
+            throw new WantedMarketHttpException(UserErrorCode.AUTH_USERNAME_NOT_FOUND, HttpStatus.BAD_REQUEST);
+        } catch (AuthInvalidPasswordException e) {
+            throw new WantedMarketHttpException(UserErrorCode.AUTH_INVALID_PASSWORD, HttpStatus.BAD_REQUEST);
         }
 
         response.setHeader("authorization-token", result.token().getToken());
