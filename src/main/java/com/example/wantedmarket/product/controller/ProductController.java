@@ -5,13 +5,13 @@ import com.example.wantedmarket.common.controller.ApiResponse;
 import com.example.wantedmarket.common.exception.WantedMarketHttpException;
 import com.example.wantedmarket.product.controller.consts.ProductErrorCode;
 import com.example.wantedmarket.product.controller.dto.ListProductResponse;
-import com.example.wantedmarket.product.controller.dto.ProductFindByIdResponse;
+import com.example.wantedmarket.product.controller.dto.ProductDetailResponse;
 import com.example.wantedmarket.product.controller.dto.ProductRegisterRequest;
 import com.example.wantedmarket.product.controller.dto.ProductRegisterResponse;
 import com.example.wantedmarket.product.service.ProductService;
 import com.example.wantedmarket.product.service.domain.Product;
-import com.example.wantedmarket.product.service.exception.NotAuthorizedProductToRegisterException;
 import com.example.wantedmarket.product.service.exception.ProductNotFoundException;
+import com.example.wantedmarket.product.service.exception.UserNotFoundException;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +39,7 @@ public class ProductController {
 
         try {
             result = productService.register(userId, request.name(), request.price());
-        } catch (NotAuthorizedProductToRegisterException e) {
+        } catch (UserNotFoundException e) {
             throw new WantedMarketHttpException(ProductErrorCode.NOT_AUTHORIZED_PRODUCT_TO_REGISTER,
                 HttpStatus.UNAUTHORIZED);
         }
@@ -48,20 +48,23 @@ public class ProductController {
         return ApiResponse.fromData(response);
     }
 
-    @GetMapping("/products/{productId}")
-    public ApiResponse<ProductFindByIdResponse> findById(@PathVariable Long productId) {
+    /*
+    * 비회원 - 제품 상세 조회
+    * */
+    @GetMapping("/open/products/{productId}")
+    public ApiResponse<ProductDetailResponse> findProductDetailForGuest(@PathVariable Long productId) {
         Product result;
         try {
-            result = productService.findById(productId);
+            result = productService.findByIdForGuest(productId);
         } catch (ProductNotFoundException e) {
             throw new WantedMarketHttpException(ProductErrorCode.PRODUCT_NOT_FOUND,
                 HttpStatus.NOT_FOUND);
         }
-        ProductFindByIdResponse response = ProductFindByIdResponse.from(result);
+        ProductDetailResponse response = ProductDetailResponse.from(result);
         return ApiResponse.fromData(response);
     }
 
-    @GetMapping("/products")
+    @GetMapping("/open/products")
     public ApiResponse<ListProductResponse> findAll() {
         List<Product> result = productService.findAll();
         ListProductResponse response = ListProductResponse.from(result);

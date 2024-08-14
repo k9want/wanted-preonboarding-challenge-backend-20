@@ -4,14 +4,16 @@ import com.example.wantedmarket.common.annotation.TokenByUserId;
 import com.example.wantedmarket.common.controller.ApiResponse;
 import com.example.wantedmarket.common.exception.WantedMarketHttpException;
 import com.example.wantedmarket.deal.controller.consts.DealErrorCode;
-import com.example.wantedmarket.deal.controller.dto.ListSaleHistoryResponse;
+import com.example.wantedmarket.deal.controller.dto.ProductDetailForUserResponse;
+import com.example.wantedmarket.deal.controller.dto.PurchaseDealHistoryResponse;
+import com.example.wantedmarket.deal.controller.dto.SaleDealHistoryResponse;
 import com.example.wantedmarket.deal.controller.dto.PurchaseResponse;
-import com.example.wantedmarket.deal.controller.dto.ListPurchaseHistoryResponse;
 import com.example.wantedmarket.deal.service.DealService;
+import com.example.wantedmarket.deal.service.command.ProductDetailForUserCommand;
 import com.example.wantedmarket.deal.service.domain.Deal;
 import com.example.wantedmarket.deal.service.exception.NotAuthorizedDealToProductException;
+import com.example.wantedmarket.deal.service.exception.ProductNotFoundException;
 import com.example.wantedmarket.deal.service.exception.SelfPurchaseNotAllowedException;
-import com.example.wantedmarket.deal.service.exception.ToPurchaseProductNotFoundException;
 import com.example.wantedmarket.product.service.exception.StatusAlreadyCompletedProductException;
 import com.example.wantedmarket.product.service.exception.StatusAlreadyReservedProductException;
 import java.util.List;
@@ -45,8 +47,8 @@ public class DealController {
         } catch (NotAuthorizedDealToProductException e) {
             throw new WantedMarketHttpException(DealErrorCode.NOT_AUTHORIZED_PRODUCT_TO_BUY,
                 HttpStatus.UNAUTHORIZED);
-        } catch (ToPurchaseProductNotFoundException e) {
-            throw new WantedMarketHttpException(DealErrorCode.TO_PURCHASE_PRODUCT_NOT_FOUND,
+        } catch (ProductNotFoundException e) {
+            throw new WantedMarketHttpException(DealErrorCode.PRODUCT_NOT_FOUND,
                 HttpStatus.NOT_FOUND);
         } catch (SelfPurchaseNotAllowedException e) {
             throw new WantedMarketHttpException(DealErrorCode.SELF_PURCHASE_NOT_ALLOWED,
@@ -64,10 +66,32 @@ public class DealController {
     }
 
     /*
+     * 회원 - 제품 상세 조회
+     * 본인의 구매 혹은 판매 제품은 거래내역 포함
+     * */
+    @GetMapping("/products/{productId}")
+    public ApiResponse<ProductDetailForUserResponse> findProductDetailForUser(
+        @TokenByUserId Long userId,
+        @PathVariable Long productId) {
+        ProductDetailForUserCommand result;
+        try {
+            result = dealService.findByIdForUser(userId, productId);
+        } catch (NotAuthorizedDealToProductException e) {
+            throw new WantedMarketHttpException(DealErrorCode.NOT_AUTHORIZED_PRODUCT_DETAIL,
+                HttpStatus.UNAUTHORIZED);
+        } catch (ProductNotFoundException e) {
+            throw new WantedMarketHttpException(DealErrorCode.PRODUCT_NOT_FOUND,
+                HttpStatus.NOT_FOUND);
+        }
+        ProductDetailForUserResponse response = ProductDetailForUserResponse.from(result);
+        return ApiResponse.fromData(response);
+    }
+
+    /*
      * 구매 내역 조회
      * */
     @GetMapping("/purchases-history")
-    public ApiResponse<ListPurchaseHistoryResponse> purchasesHistory(
+    public ApiResponse<PurchaseDealHistoryResponse> purchasesHistory(
         @TokenByUserId Long userId
     ) {
         List<Deal> result;
@@ -77,7 +101,7 @@ public class DealController {
             throw new WantedMarketHttpException(DealErrorCode.NOT_AUTHORIZED_PURCHASES_HISTORY,
                 HttpStatus.UNAUTHORIZED);
         }
-        ListPurchaseHistoryResponse response = ListPurchaseHistoryResponse.from(result);
+        PurchaseDealHistoryResponse response = PurchaseDealHistoryResponse.from(result);
         return ApiResponse.fromData(response);
     }
 
@@ -85,7 +109,7 @@ public class DealController {
      * 판매 내역 조회
      * */
     @GetMapping("/sales-history")
-    public ApiResponse<ListSaleHistoryResponse> salesHistory(
+    public ApiResponse<SaleDealHistoryResponse> salesHistory(
         @TokenByUserId Long userId
     ) {
         List<Deal> result;
@@ -95,7 +119,7 @@ public class DealController {
             throw new WantedMarketHttpException(DealErrorCode.NOT_AUTHORIZED_SALES_HISTORY,
                 HttpStatus.UNAUTHORIZED);
         }
-        ListSaleHistoryResponse response = ListSaleHistoryResponse.from(result);
+        SaleDealHistoryResponse response = SaleDealHistoryResponse.from(result);
         return ApiResponse.fromData(response);
     }
 }

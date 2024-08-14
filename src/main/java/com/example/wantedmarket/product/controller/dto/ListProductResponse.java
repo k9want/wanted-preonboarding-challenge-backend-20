@@ -4,13 +4,13 @@ import com.example.wantedmarket.product.service.domain.Product;
 import java.util.List;
 
 public record ListProductResponse(
-    List<ProductResponse> products
+    List<ProductDetailResponse> products
 
 ) {
     public static ListProductResponse from(List<Product> products) {
         return new ListProductResponse(
             products.stream()
-                .map(ProductResponse::from)
+                .map(ProductDetailResponse::from)
                 .toList()
         );
     }

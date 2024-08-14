@@ -18,8 +18,8 @@ public class WebConfig implements WebMvcConfigurer {
     private final List<String> PASS_URL = List.of(
         "/api/v1/register",
         "/api/v1/login",
-        "/api/v1/products",
-        "/api/v1/products/*"
+        "/api/v1/open/products",
+        "/api/v1/open/products/*"
     );
 
     private final List<String> DEFAULT_EXCLUDE = List.of(
