@@ -6,6 +6,7 @@ import com.example.wantedmarket.product.service.domain.Product;
 import com.example.wantedmarket.product.service.exception.NotAuthorizedProductToRegisterException;
 import com.example.wantedmarket.user.repository.jpa.UserRepository;
 import com.example.wantedmarket.user.service.domain.User;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +28,10 @@ public class ProductService {
 
         Product product = Product.register(name, price, seller);
         return productRepository.save(ProductEntity.from(product)).toModel();
+    }
+
+    public List<Product> findAll() {
+        return productRepository.findAll().stream().map(ProductEntity::toModel).toList();
     }
 
 }
