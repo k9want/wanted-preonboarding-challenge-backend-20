@@ -1,4 +1,7 @@
 spring:
+  messages:
+    basename: messages
+    encoding: UTF-8
   jpa:
     hibernate:
       ddl-auto: update
@@ -18,6 +21,7 @@ logging:
           descriptor:
             sql:
               BasicBinder: TRACE
+    root: INFO
 
 jwt:
   secret-key: ${jwt-secret-key}

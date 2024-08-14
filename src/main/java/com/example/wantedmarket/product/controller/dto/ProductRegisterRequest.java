@@ -4,10 +4,10 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record ProductRegisterRequest(
-    @NotBlank
+    @NotBlank(message = "{productRegisterRequest.name.notBlank}")
     String name,
 
-    @NotNull
+    @NotNull(message = "{productRegisterRequest.price.notNull}")
     Double price
 ) {
 
