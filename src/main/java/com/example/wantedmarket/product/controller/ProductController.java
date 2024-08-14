@@ -5,16 +5,19 @@ import com.example.wantedmarket.common.controller.ApiResponse;
 import com.example.wantedmarket.common.exception.WantedMarketHttpException;
 import com.example.wantedmarket.product.controller.consts.ProductErrorCode;
 import com.example.wantedmarket.product.controller.dto.ProductFindAllResponse;
+import com.example.wantedmarket.product.controller.dto.ProductFindByIdResponse;
 import com.example.wantedmarket.product.controller.dto.ProductRegisterRequest;
 import com.example.wantedmarket.product.controller.dto.ProductRegisterResponse;
 import com.example.wantedmarket.product.service.ProductService;
 import com.example.wantedmarket.product.service.domain.Product;
 import com.example.wantedmarket.product.service.exception.NotAuthorizedProductToRegisterException;
+import com.example.wantedmarket.product.service.exception.ProductNotFoundException;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,6 +45,19 @@ public class ProductController {
         }
 
         ProductRegisterResponse response = ProductRegisterResponse.from(result);
+        return ApiResponse.fromData(response);
+    }
+
+    @GetMapping("/products/{productId}")
+    public ApiResponse<ProductFindByIdResponse> findById(@PathVariable Long productId) {
+        Product result;
+        try {
+            result = productService.findById(productId);
+        } catch (ProductNotFoundException e) {
+            throw new WantedMarketHttpException(ProductErrorCode.PRODUCT_NOT_FOUND,
+                HttpStatus.NOT_FOUND);
+        }
+        ProductFindByIdResponse response = ProductFindByIdResponse.from(result);
         return ApiResponse.fromData(response);
     }
 
