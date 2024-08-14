@@ -9,7 +9,7 @@ public enum CommonErrorCodes implements ErrorCodesIf {
     BAD_REQUEST_INVALID_INPUT_ERROR("BAD_REQUEST - 유효하지 않은 입력값 발생", 401L),
     BAD_REQUEST_REQUEST_ATTRIBUTES_MISSING("BAD_REQUEST - RequestAttributes is null, Cannot resolve userId.", 402L),
     BAD_REQUEST_USER_ID_MISSING("BAD_REQUEST - userId attribute is not set in the RequestAttributes.", 403L),
-    UNAUTHORIZED_TOKEN_AUTHORIZATION_TOKEN_NOT_FOUND("UNAUTHORIZED - 인증 헤더 토큰 없음.", 404L),
+    UNAUTHORIZED_TOKEN_AUTHORIZATION_TOKEN_NOT_FOUND("해당 기능 회원만 가능합니다. UNAUTHORIZED - 인증 헤더 토큰 없음.", 404L),
     UNAUTHORIZED_TOKEN_EXPIRED_TOKEN("UNAUTHORIZED - 만료된 인증 헤더 토큰", 405L),
     BAD_REQUEST_TOKEN_INVALID_TOKEN("BAD_REQUEST - 유효하지 않은 인증 헤더 토큰.", 406L),
     INTERNAL_SERVER_ERROR_TOKEN_AUTHORIZATION_FAIL("INTERNAL_SERVER_ERROR - 인증 헤더 토큰 인증 실패.", 407L),
