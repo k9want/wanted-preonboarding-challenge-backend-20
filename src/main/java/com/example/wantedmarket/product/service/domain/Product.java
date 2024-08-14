@@ -53,6 +53,7 @@ public class Product {
         }
 
         return Product.builder()
+            .id(this.id)
             .name(this.name)
             .price(this.price)
             .seller(this.seller)
