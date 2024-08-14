@@ -3,7 +3,7 @@ package com.example.wantedmarket.product.service.domain.enums;
 public enum ProductStatus {
     ON_SALE("판매중"),
     RESERVATION("예약중"),
-    COMPLETED("완료");
+    COMPLETED("거래 완료");
 
     private final String description;
 

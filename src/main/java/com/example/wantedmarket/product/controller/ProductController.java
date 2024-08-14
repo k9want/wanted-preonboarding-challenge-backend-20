@@ -4,7 +4,7 @@ import com.example.wantedmarket.common.annotation.TokenByUserId;
 import com.example.wantedmarket.common.controller.ApiResponse;
 import com.example.wantedmarket.common.exception.WantedMarketHttpException;
 import com.example.wantedmarket.product.controller.consts.ProductErrorCode;
-import com.example.wantedmarket.product.controller.dto.ProductFindAllResponse;
+import com.example.wantedmarket.product.controller.dto.ListProductResponse;
 import com.example.wantedmarket.product.controller.dto.ProductFindByIdResponse;
 import com.example.wantedmarket.product.controller.dto.ProductRegisterRequest;
 import com.example.wantedmarket.product.controller.dto.ProductRegisterResponse;
@@ -62,9 +62,9 @@ public class ProductController {
     }
 
     @GetMapping("/products")
-    public ApiResponse<ProductFindAllResponse> findAll() {
+    public ApiResponse<ListProductResponse> findAll() {
         List<Product> result = productService.findAll();
-        ProductFindAllResponse response = ProductFindAllResponse.from(result);
+        ListProductResponse response = ListProductResponse.from(result);
         return ApiResponse.fromData(response);
     }
 }

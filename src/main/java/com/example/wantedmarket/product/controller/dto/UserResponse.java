@@ -2,11 +2,11 @@ package com.example.wantedmarket.product.controller.dto;
 
 import com.example.wantedmarket.user.service.domain.User;
 
-public record SellerResponse(
+public record UserResponse(
     String nickname
 ) {
-    public static SellerResponse from(User seller) {
-        return new SellerResponse(
+    public static UserResponse from(User seller) {
+        return new UserResponse(
             seller.getNickname()
         );
     }

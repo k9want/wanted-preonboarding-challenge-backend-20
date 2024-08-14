@@ -2,12 +2,12 @@ package com.example.wantedmarket.deal.controller.dto;
 
 import com.example.wantedmarket.deal.service.domain.Deal;
 
-public record ProductPurchaseResponse(
+public record PurchaseResponse(
     String dealStatus
 ) {
 
-    public static ProductPurchaseResponse from(Deal deal) {
-        return new ProductPurchaseResponse(
+    public static PurchaseResponse from(Deal deal) {
+        return new PurchaseResponse(
             deal.getStatus().getDescription()
         );
     }

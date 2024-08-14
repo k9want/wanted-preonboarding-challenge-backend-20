@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -33,7 +34,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse<Object>> handleValidExceptionHandler(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ApiResponse<Object>> handleValidExceptionHandler(
+        MethodArgumentNotValidException ex) {
 
         Map<String, String> errors = ex.getBindingResult().getFieldErrors().stream()
             .collect(Collectors.toMap(
@@ -41,8 +43,24 @@ public class GlobalExceptionHandler {
                 FieldError::getDefaultMessage
             ));
 
-        final ApiResponse<Object> body = ApiResponse.fromErrorCodes(CommonErrorCodes.BAD_REQUEST_INVALID_INPUT_ERROR, errors);
-        final MediaType contentType = new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8);
+        final ApiResponse<Object> body = ApiResponse.fromErrorCodes(
+            CommonErrorCodes.BAD_REQUEST_INVALID_INPUT_ERROR, errors);
+        final MediaType contentType = new MediaType(MediaType.APPLICATION_JSON,
+            StandardCharsets.UTF_8);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .contentType(contentType)
+            .body(body);
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ApiResponse<Object>> handleJsonParseExceptionHandler(
+        HttpRequestMethodNotSupportedException e) {
+
+        final ApiResponse<Object> body = ApiResponse.fromErrorCodes(
+            CommonErrorCodes.BAD_REQUEST_HTTP_REQUEST_METHOD_NOT_SUPPORT);
+        final MediaType contentType = new MediaType(MediaType.APPLICATION_JSON,
+            StandardCharsets.UTF_8);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .contentType(contentType)
@@ -50,10 +68,13 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ApiResponse<Object>> handleJsonParseExceptionHandler(HttpMessageNotReadableException e) {
+    public ResponseEntity<ApiResponse<Object>> handleJsonParseExceptionHandler(
+        HttpMessageNotReadableException e) {
 
-        final ApiResponse<Object> body = ApiResponse.fromErrorCodes(CommonErrorCodes.BAD_REQUEST_JSON_PARSE_ERROR);
-        final MediaType contentType = new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8);
+        final ApiResponse<Object> body = ApiResponse.fromErrorCodes(
+            CommonErrorCodes.BAD_REQUEST_JSON_PARSE_ERROR);
+        final MediaType contentType = new MediaType(MediaType.APPLICATION_JSON,
+            StandardCharsets.UTF_8);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .contentType(contentType)
@@ -65,8 +86,10 @@ public class GlobalExceptionHandler {
 
         log.error("서버 에러 발생 - ", e);
 
-        final ApiResponse<Object> body = ApiResponse.fromErrorCodes(CommonErrorCodes.INTERNAL_SERVER_ERROR);
-        final MediaType contentType = new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8);
+        final ApiResponse<Object> body = ApiResponse.fromErrorCodes(
+            CommonErrorCodes.INTERNAL_SERVER_ERROR);
+        final MediaType contentType = new MediaType(MediaType.APPLICATION_JSON,
+            StandardCharsets.UTF_8);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .contentType(contentType)
