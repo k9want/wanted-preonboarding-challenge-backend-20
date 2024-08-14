@@ -7,4 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface DealRepository extends JpaRepository<DealEntity, Long> {
 
     List<DealEntity> findByBuyerId(Long buyerId);
+    List<DealEntity> findBySellerId(Long buyerId);
 }

@@ -4,11 +4,12 @@ import com.example.wantedmarket.common.annotation.TokenByUserId;
 import com.example.wantedmarket.common.controller.ApiResponse;
 import com.example.wantedmarket.common.exception.WantedMarketHttpException;
 import com.example.wantedmarket.deal.controller.consts.DealErrorCode;
+import com.example.wantedmarket.deal.controller.dto.ListSaleHistoryResponse;
 import com.example.wantedmarket.deal.controller.dto.PurchaseResponse;
 import com.example.wantedmarket.deal.controller.dto.ListPurchaseHistoryResponse;
 import com.example.wantedmarket.deal.service.DealService;
 import com.example.wantedmarket.deal.service.domain.Deal;
-import com.example.wantedmarket.deal.service.exception.NotAuthorizedProductToBuyException;
+import com.example.wantedmarket.deal.service.exception.NotAuthorizedDealToProductException;
 import com.example.wantedmarket.deal.service.exception.SelfPurchaseNotAllowedException;
 import com.example.wantedmarket.deal.service.exception.ToPurchaseProductNotFoundException;
 import com.example.wantedmarket.product.service.exception.StatusAlreadyCompletedProductException;
@@ -30,8 +31,8 @@ public class DealController {
     private final DealService dealService;
 
     /*
-    * 상품 구매
-    * */
+     * 상품 구매
+     * */
     @PostMapping("/products/{productId}/purchase")
     public ApiResponse<PurchaseResponse> purchase(
         @TokenByUserId Long userId,
@@ -41,22 +42,30 @@ public class DealController {
         Deal result;
         try {
             result = dealService.createDeal(userId, productId);
-        } catch (NotAuthorizedProductToBuyException e) {
-            throw new WantedMarketHttpException(DealErrorCode.NOT_AUTHORIZED_PRODUCT_TO_BUY, HttpStatus.UNAUTHORIZED);
+        } catch (NotAuthorizedDealToProductException e) {
+            throw new WantedMarketHttpException(DealErrorCode.NOT_AUTHORIZED_PRODUCT_TO_BUY,
+                HttpStatus.UNAUTHORIZED);
         } catch (ToPurchaseProductNotFoundException e) {
-            throw new WantedMarketHttpException(DealErrorCode.TO_PURCHASE_PRODUCT_NOT_FOUND, HttpStatus.NOT_FOUND);
+            throw new WantedMarketHttpException(DealErrorCode.TO_PURCHASE_PRODUCT_NOT_FOUND,
+                HttpStatus.NOT_FOUND);
         } catch (SelfPurchaseNotAllowedException e) {
-            throw new WantedMarketHttpException(DealErrorCode.SELF_PURCHASE_NOT_ALLOWED, HttpStatus.CONFLICT);
+            throw new WantedMarketHttpException(DealErrorCode.SELF_PURCHASE_NOT_ALLOWED,
+                HttpStatus.CONFLICT);
         } catch (StatusAlreadyReservedProductException e) {
-            throw new WantedMarketHttpException(DealErrorCode.STATUS_ALREADY_RESERVED_PRODUCT, HttpStatus.CONFLICT);
+            throw new WantedMarketHttpException(DealErrorCode.STATUS_ALREADY_RESERVED_PRODUCT,
+                HttpStatus.CONFLICT);
         } catch (StatusAlreadyCompletedProductException e) {
-            throw new WantedMarketHttpException(DealErrorCode.STATUS_ALREADY_COMPLETED_PRODUCT, HttpStatus.CONFLICT);
+            throw new WantedMarketHttpException(DealErrorCode.STATUS_ALREADY_COMPLETED_PRODUCT,
+                HttpStatus.CONFLICT);
         }
 
         PurchaseResponse response = PurchaseResponse.from(result);
         return ApiResponse.fromData(response);
     }
 
+    /*
+     * 구매 내역 조회
+     * */
     @GetMapping("/purchases-history")
     public ApiResponse<ListPurchaseHistoryResponse> purchasesHistory(
         @TokenByUserId Long userId
@@ -64,10 +73,29 @@ public class DealController {
         List<Deal> result;
         try {
             result = dealService.findPurchasesHistoryByUserId(userId);
-        } catch (NotAuthorizedProductToBuyException e) {
-            throw new WantedMarketHttpException(DealErrorCode.NOT_AUTHORIZED_PRODUCT_TO_BUY, HttpStatus.UNAUTHORIZED);
+        } catch (NotAuthorizedDealToProductException e) {
+            throw new WantedMarketHttpException(DealErrorCode.NOT_AUTHORIZED_PURCHASES_HISTORY,
+                HttpStatus.UNAUTHORIZED);
         }
         ListPurchaseHistoryResponse response = ListPurchaseHistoryResponse.from(result);
+        return ApiResponse.fromData(response);
+    }
+
+    /*
+     * 판매 내역 조회
+     * */
+    @GetMapping("/sales-history")
+    public ApiResponse<ListSaleHistoryResponse> salesHistory(
+        @TokenByUserId Long userId
+    ) {
+        List<Deal> result;
+        try {
+            result = dealService.findSalesHistoryByUserId(userId);
+        } catch (NotAuthorizedDealToProductException e) {
+            throw new WantedMarketHttpException(DealErrorCode.NOT_AUTHORIZED_SALES_HISTORY,
+                HttpStatus.UNAUTHORIZED);
+        }
+        ListSaleHistoryResponse response = ListSaleHistoryResponse.from(result);
         return ApiResponse.fromData(response);
     }
 }

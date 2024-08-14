@@ -1,7 +1,6 @@
 package com.example.wantedmarket.deal.controller.dto;
 
 import com.example.wantedmarket.deal.service.domain.Deal;
-import com.example.wantedmarket.product.controller.dto.ProductResponse;
 import com.example.wantedmarket.product.controller.dto.UserResponse;
 import java.util.List;
 
@@ -18,14 +17,14 @@ public record ListPurchaseHistoryResponse(
     }
 
     public record PurchaseHistoryResponse(
-        ProductResponse product,
+        DealProductResponse product,
         UserResponse seller,
         String dealStatus
     ) {
 
         public static PurchaseHistoryResponse from(Deal deal) {
             return new PurchaseHistoryResponse(
-                ProductResponse.from(deal.getProduct()),
+                DealProductResponse.from(deal.getProduct()),
                 UserResponse.from(deal.getSeller()),
                 deal.getStatus().getDescription()
             );

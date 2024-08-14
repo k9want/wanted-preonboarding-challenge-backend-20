@@ -3,7 +3,7 @@ package com.example.wantedmarket.deal.service;
 import com.example.wantedmarket.deal.repository.DealRepository;
 import com.example.wantedmarket.deal.repository.jpa.entity.DealEntity;
 import com.example.wantedmarket.deal.service.domain.Deal;
-import com.example.wantedmarket.deal.service.exception.NotAuthorizedProductToBuyException;
+import com.example.wantedmarket.deal.service.exception.NotAuthorizedDealToProductException;
 import com.example.wantedmarket.deal.service.exception.ToPurchaseProductNotFoundException;
 import com.example.wantedmarket.product.repository.jpa.entity.ProductEntity;
 import com.example.wantedmarket.product.repository.jpa.entity.ProductRepository;
@@ -43,13 +43,19 @@ public class DealService {
 
     public List<Deal> findPurchasesHistoryByUserId(Long userId) {
         User user = getByUserId(userId);
-        return dealRepository.findByBuyerId(userId)
+        return dealRepository.findByBuyerId(user.getId())
+            .stream().map(DealEntity::toModel).toList();
+    }
+
+    public List<Deal> findSalesHistoryByUserId(Long userId) {
+        User user = getByUserId(userId);
+        return dealRepository.findBySellerId(user.getId())
             .stream().map(DealEntity::toModel).toList();
     }
 
     private User getByUserId(Long userId) {
         return userRepository.findById(userId)
-            .orElseThrow(NotAuthorizedProductToBuyException::new)
+            .orElseThrow(NotAuthorizedDealToProductException::new)
             .toModel();
     }
 }
