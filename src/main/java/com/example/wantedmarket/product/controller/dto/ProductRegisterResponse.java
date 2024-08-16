@@ -3,7 +3,7 @@ package com.example.wantedmarket.product.controller.dto;
 import com.example.wantedmarket.product.service.domain.Product;
 
 public record ProductRegisterResponse(
-    Long id,
+    Long productId,
     String name,
     Double price,
     String status

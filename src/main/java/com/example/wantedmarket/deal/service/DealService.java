@@ -1,5 +1,6 @@
 package com.example.wantedmarket.deal.service;
 
+import com.example.wantedmarket.deal.service.exception.DealNotFoundException;
 import com.example.wantedmarket.deal.repository.DealRepository;
 import com.example.wantedmarket.deal.repository.jpa.entity.DealEntity;
 import com.example.wantedmarket.deal.service.command.ProductDetailForUserCommand;
@@ -27,16 +28,31 @@ public class DealService {
     @Transactional
     // todo: 동시성 이슈 발생하는 기능
     public Deal createDeal(Long userId, Long productId) {
-        User user = getUserById(userId);
+        User buyer = getUserById(userId);
         Product product = getProductById(productId);
 
-        Product reservedProduct = product.reserve(user);
-        Deal deal = Deal.create(user, product);
+        // 거래 생성 (feat.제품 상태: "예약 중" 변경, 거래 상태: "거래 대기" [default])
+        Deal createDeal = Deal.create(buyer, product);
 
-        // 상태가 변경된 product 저장
-        productRepository.save(ProductEntity.from(reservedProduct));
-        return dealRepository.save(DealEntity.from(deal)).toModel();
+        // save
+        Product reserveProduct = createDeal.getProduct();
+        productRepository.save(ProductEntity.from(reserveProduct));
+        return dealRepository.save(DealEntity.from(createDeal)).toModel();
     }
+
+    public Deal approveSale(Long userId, Long dealId) {
+        User seller = getUserById(userId);
+        Deal deal = getDealById(dealId);
+
+        // 판매 승인 (feat.제품 상태: "거래 완료" 변경, 거래 상태: "판매 승인" 변경)
+        Deal approveSaleDeal = deal.approveSale(seller);
+
+        // save
+        Product approveSaleProduct = approveSaleDeal.getProduct();
+        productRepository.save(ProductEntity.from(approveSaleProduct));
+        return dealRepository.save(DealEntity.from(approveSaleDeal)).toModel();
+    }
+
 
     public ProductDetailForUserCommand findByIdForUser(Long userId, Long productId) {
 
@@ -80,6 +96,12 @@ public class DealService {
     private Product getProductById(Long productId) {
         return productRepository.findById(productId)
             .orElseThrow(ProductNotFoundException::new)
+            .toModel();
+    }
+
+    private Deal getDealById(Long dealId) {
+        return dealRepository.findById(dealId)
+            .orElseThrow(DealNotFoundException::new)
             .toModel();
     }
 }

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public record ProductDetailForUserResponse(
-    Long id,
+    Long productId,
     String name,
     Double price,
     UserResponse seller,
