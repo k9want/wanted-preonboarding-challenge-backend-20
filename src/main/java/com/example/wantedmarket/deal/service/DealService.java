@@ -1,5 +1,6 @@
 package com.example.wantedmarket.deal.service;
 
+import com.example.wantedmarket.deal.service.domain.enums.DealStatus;
 import com.example.wantedmarket.deal.service.exception.DealNotFoundException;
 import com.example.wantedmarket.deal.repository.DealRepository;
 import com.example.wantedmarket.deal.repository.jpa.entity.DealEntity;
@@ -10,6 +11,7 @@ import com.example.wantedmarket.deal.service.exception.ProductNotFoundException;
 import com.example.wantedmarket.product.repository.jpa.entity.ProductEntity;
 import com.example.wantedmarket.product.repository.jpa.entity.ProductRepository;
 import com.example.wantedmarket.product.service.domain.Product;
+import com.example.wantedmarket.product.service.domain.enums.ProductStatus;
 import com.example.wantedmarket.user.repository.jpa.UserRepository;
 import com.example.wantedmarket.user.service.domain.User;
 import java.util.List;
@@ -83,8 +85,15 @@ public class DealService {
 
     public List<Deal> findSalesHistoryByUserId(Long userId) {
         User user = getUserById(userId);
-        return dealRepository.findAllBySellerId(user.getId())
+        return dealRepository.findAllBySellerIdAndStatus(user.getId(), DealStatus.APPROVED)
             .stream().map(DealEntity::toModel).toList();
+    }
+
+    public List<Product> findSalesNow(Long userId) {
+        User user = getUserById(userId);
+        return productRepository.findAllBySellerIdAndStatusIn(user.getId(),
+                List.of(ProductStatus.ON_SALE, ProductStatus.RESERVATION))
+            .stream().map(ProductEntity::toModel).toList();
     }
 
     private User getUserById(Long userId) {

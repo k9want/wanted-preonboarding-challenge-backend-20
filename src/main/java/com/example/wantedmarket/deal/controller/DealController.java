@@ -7,8 +7,9 @@ import com.example.wantedmarket.deal.controller.consts.DealErrorCode;
 import com.example.wantedmarket.deal.controller.dto.ApproveSaleResponse;
 import com.example.wantedmarket.deal.controller.dto.ProductDetailForUserResponse;
 import com.example.wantedmarket.deal.controller.dto.PurchaseDealHistoryResponse;
-import com.example.wantedmarket.deal.controller.dto.SaleDealHistoryResponse;
 import com.example.wantedmarket.deal.controller.dto.PurchaseResponse;
+import com.example.wantedmarket.deal.controller.dto.SaleDealHistoryResponse;
+import com.example.wantedmarket.deal.controller.dto.SalesNowResponse;
 import com.example.wantedmarket.deal.service.DealService;
 import com.example.wantedmarket.deal.service.command.ProductDetailForUserCommand;
 import com.example.wantedmarket.deal.service.domain.Deal;
@@ -17,6 +18,7 @@ import com.example.wantedmarket.deal.service.exception.NotAuthorizedDealToProduc
 import com.example.wantedmarket.deal.service.exception.NotSellerOfProductException;
 import com.example.wantedmarket.deal.service.exception.ProductNotFoundException;
 import com.example.wantedmarket.deal.service.exception.SelfPurchaseNotAllowedException;
+import com.example.wantedmarket.product.service.domain.Product;
 import com.example.wantedmarket.product.service.exception.StatusAlreadyCompletedProductException;
 import com.example.wantedmarket.product.service.exception.StatusAlreadyReservedProductException;
 import com.example.wantedmarket.product.service.exception.StatusNotReservationException;
@@ -156,6 +158,24 @@ public class DealController {
                 HttpStatus.UNAUTHORIZED);
         }
         SaleDealHistoryResponse response = SaleDealHistoryResponse.from(result);
+        return ApiResponse.fromData(response);
+    }
+
+    /*
+     * 판매 내역 조회 - 판매 중 (판매중, 예약 중)
+     * */
+    @GetMapping("/sales-now")
+    public ApiResponse<SalesNowResponse> salesNow(
+        @TokenByUserId Long userId
+    ) {
+        List<Product> result;
+        try {
+            result = dealService.findSalesNow(userId);
+        } catch (NotAuthorizedDealToProductException e) {
+            throw new WantedMarketHttpException(DealErrorCode.NOT_AUTHORIZED_SALES_HISTORY,
+                HttpStatus.UNAUTHORIZED);
+        }
+        SalesNowResponse response = SalesNowResponse.from(result);
         return ApiResponse.fromData(response);
     }
 }
